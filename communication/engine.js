@@ -67,6 +67,9 @@ function wssReceiveMessageHandler(message) {
     var msgHandler = reqHandler[message[constants.PROTO_HEADER_MSGID]];
     // clear request timeout timer
     clearTimeout(msgHandler.timer);
+    // delete request handler in map
+    delete reqHandler[message[constants.PROTO_HEADER_MSGID]];
+    // console.log("message handler:", msgHandler, "req handler:", reqHandler);
 
     // handle message data
     var data = JSON.parse(message.data);
