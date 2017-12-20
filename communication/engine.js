@@ -16,12 +16,13 @@ var ERROR_INFO = {
 };
 
 var ENGINE_INIT = "init";
-var ENGINE_CLEAR = "clear"
+var ENGINE_CLEAR = "clear";
 
 var noop = function noop() { };
 var defaultOptions = {
     defaultHeader: {},
     status: null,
+    timeout: 5000, // wss timeout, default is 5000 millisecond
 };
 
 var getMsgId = (function () {
@@ -127,7 +128,7 @@ function wssRequest(options) {
         console.log("Server:", options.serverName, "Method:", options.methodName, " error of timeout.")
         fail(new RequestError(ERROR_INFO.ERR_TIMEOUT, '请求超时'));
         delete reqHandler.msgId;
-    }, 3000);
+    }, defaultOptions.timeout);
     // add wss request callback handler
     reqHandler[msgId] = { success: success, fail: fail, timer: timer };
 
@@ -215,6 +216,13 @@ var setUserInfo = function (userinfo) {
     }
 }
 
+var setTimeout = function (timeout) {
+    if ((typeof (timeout) === "number") && (timeout !== Infinity) && !isNaN(timeout)) {
+        defaultOptions.timeout = timeout;
+        console.log("[engine] timeout:", defaultOptions.timeout);
+    }
+}
+
 function init(header = {}) {
     if (defaultOptions.status == null) {
         console.log("[engine] first init with default header.");
@@ -249,4 +257,5 @@ module.exports = {
     clear: clear,
     rpc: rpc,
     setUserInfo: setUserInfo,
+    setTimeout: setTimeout,
 };
