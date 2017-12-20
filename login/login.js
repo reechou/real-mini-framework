@@ -70,8 +70,11 @@ function login(options) {
     var fail = options.fail || noop;
     loginInfo.success = function () {
         loginInfo.status = LOGIN_SUCCESS;
+        // notify login success to engine
         engine.setUserInfo.apply(null, arguments);
+        // notify login success where login called
         success.apply(null, arguments);
+        // notify login success where waiting for logined (maybe in page)
         loginInfo.complete(null, arguments);
     }
     loginInfo.fail = fail;

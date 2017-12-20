@@ -23,6 +23,7 @@ var defaultOptions = {
     defaultHeader: {},
     status: null,
     timeout: 5000, // wss timeout, default is 5000 millisecond
+    hasLogged: false,
 };
 
 var getMsgId = (function () {
@@ -210,7 +211,11 @@ function rpc(options = {}) {
     }
 }
 
+/**
+ * user login success, and callback
+ */
 var setUserInfo = function (userinfo) {
+    defaultOptions.hasLogged = true;
     if (userinfo.id) {
         defaultOptions.defaultHeader[constants.PROTO_HEADER_USERID] = userinfo.id;
     }
@@ -224,6 +229,11 @@ var setTimeout = function (timeout) {
 }
 
 function init(header = {}) {
+    if (!defaultOptions.hasLogged) {
+        console.log("[engine] has not logged, maybe wait.");
+        return;
+    }
+
     if (defaultOptions.status == null) {
         console.log("[engine] first init with default header.");
         // just do when first init
